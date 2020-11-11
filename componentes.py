@@ -17,7 +17,6 @@ Palabras=['PROGRAMA','VAR','VECTOR','ENTERO','REAL'
               ,'LEE','ESCRIBE','Y','O','NO'
               ,'CIERTO','FALSO']
 
-    
 # Clase generica que define un componente lexico 
 class Componente:
   def __init__(self):
@@ -62,6 +61,15 @@ class OpAdd(Componente):
         return "Operador de suma establecido: %s  En la linea: %s" % (self.valor, self.linea) 
 #debe almacenarse de que operador se trata
 
+# Clase que define la categoria OpSub
+class OpSub(Componente):
+    def __init__(self,nl):
+        self.valor = '-'  
+        self.linea = nl
+    def __str__(self):
+        return "Operador de resta establecido: %s  En la linea: %s" % (self.valor, self.linea) 
+#Debe alnmacenarse que operador es
+
 # Clase que define la categoria OpMult
 class OpMult(Componente):
     def __init__(self,nl):
@@ -69,6 +77,23 @@ class OpMult(Componente):
         self.linea = nl
     def __str__(self):
         return "Operador de multiplicación establecido: %s  En la linea: %s" % (self.valor, self.linea) 
+#Debe alnmacenarse que operador es
+
+# Clase que define la categoria OpDiv
+class OpDiv(Componente):
+    def __init__(self,nl):
+        self.valor = '/'  
+        self.linea = nl
+    def __str__(self):
+        return "Operador de modulo establecido: %s  En la linea: %s" % (self.valor, self.linea) 
+#Debe alnmacenarse que operador es
+
+class OpMod(Componente):
+    def __init__(self,nl):
+        self.valor = '%'  
+        self.linea = nl
+    def __str__(self):
+        return "Operador de división establecido: %s  En la linea: %s" % (self.valor, self.linea) 
 #Debe alnmacenarse que operador es
 
 #clases para representar los numeros.
@@ -111,13 +136,18 @@ class Identif (Componente):
 #    Componente.__init__(self)
 #    self.valor= v
 #    self.linea=nl
+     if(v not in Palabras):           
         if(v[0] in ascii_letters ):
             self.valor = v
             self.linea = nl
         else:
-            print("Este valor no es válido como identificador")
-            self.valor = None
-            self.linea = nl
+         print("Este valor no es válido como identificador")
+         self.valor = None
+         self.linea = nl
+     else:
+         print("Este valor no es válido como identificador")
+         self.valor = None
+         self.linea = nl
     def __str__(self):
         if self.valor== None:
             return "No es un identificador valido" 
@@ -163,3 +193,69 @@ class OpRel (Componente):
         if self.valor== None:
             return "No es operador relacional válido" 
         return "Operadr relacional establecido: %s  En la linea: %s" % (self.valor, self.linea)
+    
+
+class ComentarioLineal(Componente):
+    def __init__(self,nl):
+        self.valor = '%%'  
+        self.linea = nl
+    def __str__(self):
+        return "Comentario lineal establecido: %s  En la linea: %s" % (self.valor, self.linea) 
+
+class EspacioEnBlanco(Componente):
+    def __init__(self,nl):
+        self.valor = ' '  
+        self.linea = nl
+    def __str__(self):
+        return "Espacio en blanco establecido: %s  En la linea: %s" % (self.valor, self.linea) 
+
+class DosPuntos(Componente):
+    def __init__(self,nl):
+        self.valor = ':'  
+        self.linea = nl
+    def __str__(self):
+        return "Dos puntos establecido: %s  En la linea: %s" % (self.valor, self.linea) 
+    
+class PuntoyComa(Componente):
+    def __init__(self,nl):
+        self.valor = ';'  
+        self.linea = nl
+    def __str__(self):
+        return "Punto y coma establecido: %s  En la linea: %s" % (self.valor, self.linea) 
+    
+class Coma(Componente):
+    def __init__(self,nl):
+        self.valor = ','  
+        self.linea = nl
+    def __str__(self):
+        return "Coma establecido: %s  En la linea: %s" % (self.valor, self.linea) 
+
+class CorcheteA(Componente):
+    def __init__(self,nl):
+        self.valor = '['  
+        self.linea = nl
+    def __str__(self):
+        return "Corchete de apertura establecido: %s  En la linea: %s" % (self.valor, self.linea) 
+
+class CorcheteC(Componente):
+    def __init__(self,nl):
+        self.valor = ']'  
+        self.linea = nl
+    def __str__(self):
+        return "Corchete de cierre establecido: %s  En la linea: %s" % (self.valor, self.linea) 
+
+class ParentesisA(Componente):
+    def __init__(self,nl):
+        self.valor = '('  
+        self.linea = nl
+    def __str__(self):
+        return "Parentesis de apertura establecido: %s  En la linea: %s" % (self.valor, self.linea) 
+
+class ParentesisC(Componente):
+    def __init__(self,nl):
+        self.valor = ')'  
+        self.linea = nl
+    def __str__(self):
+        return "Parentesis de apertura cerrado: %s  En la linea: %s" % (self.valor, self.linea) 
+
+    
