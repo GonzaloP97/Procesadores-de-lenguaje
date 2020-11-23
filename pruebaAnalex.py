@@ -13,6 +13,7 @@ pruebaTratarId1 = open('pruebaTratarId1.txt', "r")
 pruebaTratarId2 = open('pruebaTratarId2.txt', "r")
 pruebaTratarId3 = open('pruebaTratarId3.txt', "r")
 pruebaTratarComentario = open('pruebaComentario.txt', "r")
+prueba = open('prueba.txt', "r")
 
 # =============================================================================
 # #PruebaTratarNumero
@@ -52,7 +53,7 @@ pruebaTratarComentario = open('pruebaComentario.txt', "r")
 # =============================================================================
 
 #PruebaAnaliza
-flujoExp = Flujo(pruebaTratarNumero) 
+flujoExp = Flujo(prueba) 
 analexExp = Analex(flujoExp)
 a = analexExp.Analiza()
 while a != None:    
