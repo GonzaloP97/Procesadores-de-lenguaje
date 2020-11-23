@@ -1,4 +1,43 @@
-############################################################################
+#!/usr/bin/env python
+
+import componentes
+import flujo
+import string
+import sys
+import os
+from sys import argv
+from componentes import *
+from string import ascii_letters
+
+filename = "prueba.txt"
+numeros = ['0','1','2','3','4','5','6','7','8','9']
+Palabras=['PROGRAMA','VAR','VECTOR','ENTERO','REAL'
+              ,'BOOLEANO','INICIO','FIN','SI'
+              ,'ENTONCES','SINO','MIENTRAS','HACER'
+              ,'LEE','ESCRIBE','Y','O','NO'
+              ,'CIERTO','FALSO']
+Simbolos=['=','<>','<','<=','>=','>']
+CaracterEspeciales = [':',';',',',']','[','(',')']
+class Analex:
+#############################################################################
+##  Conjunto de palabras reservadas para comprobar si un identificador es PR
+#############################################################################
+ PR = frozenset(["PROGRAMA", "VAR", "VECTOR","DE", "ENTERO", "REAL", "BOOLEANO", "INICIO", "FIN", "SI", "ENTONCES", "SINO", "MIENTRAS", "HACER", "LEE", "ESCRIBE", "Y", "O", "NO", "CIERTO","FALSO"])
+ ############################################################################
+ #
+ #  Funcion: __init__
+ #  Tarea:  Constructor de la clase
+ #  Prametros:  flujo:  flujo de caracteres de entrada
+ #  Devuelve: --
+ #
+ ############################################################################
+ def __init__(self, flujo):
+    self.flujo= flujo
+    self.poserror= 0
+    self.nlinea=1
+
+
+ ############################################################################
  #
  #  Funcion: TrataNum
  #  Tarea:  Lee un numero del flujo
@@ -9,7 +48,7 @@
  ############################################################################
  def TrataNum(self,flujo, ch):
   entera=ch
-  decimal=''
+  decimal=None
   BoolEntero = True 
   BoolDecimal = False
   ch = self.flujo.siguiente()
@@ -21,6 +60,7 @@
           if(ch == '.'):
               BoolDecimal = True
               BoolEntero = False
+              decimal = ''
           else:
               BoolDecimal = False
               BoolEntero = False
@@ -49,7 +89,7 @@
   ch = flujo.siguiente()
   valido = True
   while valido:
-      if ch == '':
+      if ch == ' ' or ch == '.':
           valido= False
       else:
           if ch in numeros or ch in ascii_letters:
@@ -57,12 +97,14 @@
               ch = flujo.siguiente()
           else:
               valido= False
+  
+  self.flujo.devuelve(ch)
   if(l not in Palabras):
-   self.flujo.devuelve(ch)
    aux = Identif(l,self.nlinea) 
    return aux
   else:
-   return None
+   return PR(l,self.nlinea)
+
 
   ############################################################################
   #
@@ -83,7 +125,7 @@
              ch = flujo.siguiente()
          return ComentarioLineal(l,self.nlinea) 
      else:
-          return None
+         return OpSub(self.nlinea)
                 
  ############################################################################
  #
@@ -107,20 +149,39 @@
  ############################################################################
  def Analiza(self):
   ch = self.flujo.siguiente()
-  print(ch)
-  if ch in numeros:
+  if ch == '=':
+      return OpAsigna(self.nlinea)
+  elif ch == '+':
+      return OpAdd(self.nlinea)
+  elif ch == '-':
+      return OpSub(self.nlinea)
+  elif ch == '*':
+      return OpMult(self.nlinea)
+  elif ch == '/':
+      return OpDiv(self.nlinea)
+  elif ch in Simbolos:
+      return OpRel(ch,self.nlinea)
+  elif ch in numeros:
       print('Tratando Numeros')
       return self.TrataNum(self.flujo,ch)
   elif ch in string.ascii_uppercase:
       print('Tratando Identificación')
       return self.TrataIdent(self.flujo,ch)
-  elif ch == '':
-      self.EliminaBlancos(self.flujo)
+  elif ch == ' ':
+      return self.Analiza()
   elif ch in CaracterEspeciales:
-      aux = CaracterEspecial(ch, self.nlinea)
-      return aux
+      return CaracterEspecial(ch, self.nlinea)
   elif ch == '.':
       return None
+  elif ch == '%':
+      return self.TrataComent(self.flujo)
+  elif ch == '\n':
+       self.nlinea=self.nlinea + 1
+       return self.Analiza()
+  else:
+    print ('Caca')
+    return self.Analiza()
+    
 ############################################################################
 #
 #  Funcion: __main__
