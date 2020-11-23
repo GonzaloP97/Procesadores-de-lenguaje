@@ -1,13 +1,3 @@
-#!/usr/bin/env python
-
-import string
-import sys
-from string import ascii_letters
-######################################################################################
-##
-##  Define varias clases que definen cada uno de los diferentes componentes lexicos
-##
-##
 ##
 ######################################################################################
 Simbolos=['=','<>','<','<=','>=','>']
@@ -196,8 +186,9 @@ class OpRel (Componente):
     
 
 class ComentarioLineal(Componente):
-    def __init__(self,nl):
-        self.valor = '%%'  
+    def __init__(self,v,nl):
+        self.valor = '%%'
+        self.valor = self.valor+v
         self.linea = nl
     def __str__(self):
         return "Comentario lineal establecido: %s  En la linea: %s" % (self.valor, self.linea) 
@@ -208,6 +199,52 @@ class EspacioEnBlanco(Componente):
         self.linea = nl
     def __str__(self):
         return "Espacio en blanco establecido: %s  En la linea: %s" % (self.valor, self.linea) 
+
+class CaracterEspecial():
+    def __init__(self,v,nl):
+        if(v == '.'):
+            a = Punto(nl)
+            self.valor = a.valor
+            self.linea = a.linea
+        elif(v == ':'):
+            a = DosPuntos(nl)
+            self.valor = a.valor
+            self.linea = a.linea
+        elif(v == ';'):
+            a = PuntoyComa(nl)
+            self.valor = a.valor
+            self.linea = a.linea
+        elif(v == ','):
+            a = Coma(nl)
+            self.valor = a.valor
+            self.linea = a.linea
+        elif(v == '['):
+            a = CorcheteA(nl)
+            self.valor = a.valor
+            self.linea = a.linea
+        elif(v == ']'):
+            a = CorcheteC(nl)
+            self.valor = a.valor
+            self.linea = a.linea
+        elif(v == '('):
+            a = ParentesisA(nl)
+            self.valor = a.valor
+            self.linea = a.linea
+        elif(v == ')'):
+            a = ParentesisC(nl)
+            self.valor = a.valor
+            self.linea = a.linea
+
+    def __str__(self):
+        return "Caracter especial establecido: %s  En la linea: %s" % (self.valor, self.linea) 
+
+
+class Punto(Componente):
+    def __init__(self,nl):
+        self.valor = '.'  
+        self.linea = nl
+    def __str__(self):
+        return "Punto establecido: %s  En la linea: %s" % (self.valor, self.linea) 
 
 class DosPuntos(Componente):
     def __init__(self,nl):
