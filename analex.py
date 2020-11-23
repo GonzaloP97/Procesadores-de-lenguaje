@@ -1,34 +1,4 @@
-#!/usr/bin/env python
-
-import componentes
-import errores
-import flujo
-import string
-import sys
-import os
-from sys import argv
-
-class Analex:
-#############################################################################
-##  Conjunto de palabras reservadas para comprobar si un identificador es PR
-#############################################################################
- PR = frozenset(["PROGRAMA", "VAR", "VECTOR","DE", "ENTERO", "REAL", "BOOLEANO", "INICIO", "FIN", "SI", "ENTONCES", "SINO", "MIENTRAS", "HACER", "LEE", "ESCRIBE", "Y", "O", "NO", "CIERTO","FALSO"])
-
- ############################################################################
- #
- #  Funcion: __init__
- #  Tarea:  Constructor de la clase
- #  Prametros:  flujo:  flujo de caracteres de entrada
- #  Devuelve: --
- #
- ############################################################################
- def __init__(self, flujo):
-    self.flujo= flujo
-    self.poserror= 0
-    self.nlinea=1
-
-
- ############################################################################
+############################################################################
  #
  #  Funcion: TrataNum
  #  Tarea:  Lee un numero del flujo
@@ -38,9 +8,31 @@ class Analex:
  #
  ############################################################################
  def TrataNum(self,flujo, ch):
-  l=ch
-  real = False
+  entera=ch
+  decimal=''
+  BoolEntero = True 
+  BoolDecimal = False
   ch = self.flujo.siguiente()
+  while BoolEntero:
+      if(ch in numeros):
+          entera = entera + ch
+          ch = self.flujo.siguiente()
+      else:
+          if(ch == '.'):
+              BoolDecimal = True
+              BoolEntero = False
+          else:
+              BoolDecimal = False
+              BoolEntero = False
+  while BoolDecimal:
+   ch = self.flujo.siguiente()
+   if(ch in numeros):
+      decimal = decimal + ch
+   else:
+      BoolDecimal= False
+  self.flujo.devuelve(ch)
+  aux = Numero(entera,decimal,self.nlinea)          
+  return aux
 #Completar
 
  ############################################################################
@@ -54,8 +46,23 @@ class Analex:
  ############################################################################
  def TrataIdent(self,flujo, ch):
   l = ch
-  #Completar
-  # return l
+  ch = flujo.siguiente()
+  valido = True
+  while valido:
+      if ch == '':
+          valido= False
+      else:
+          if ch in numeros or ch in ascii_letters:
+              l = l+ch
+              ch = flujo.siguiente()
+          else:
+              valido= False
+  if(l not in Palabras):
+   self.flujo.devuelve(ch)
+   aux = Identif(l,self.nlinea) 
+   return aux
+  else:
+   return None
 
   ############################################################################
   #
@@ -67,8 +74,17 @@ class Analex:
   #
   ############################################################################
  def TrataComent(self, flujo):
-  #Completar
-
+     ch = flujo.siguiente() 
+     if(ch =='%'):
+         l = ''
+         ch = flujo.siguiente()
+         while ch  != '\n':
+             l = l+ch
+             ch = flujo.siguiente()
+         return ComentarioLineal(l,self.nlinea) 
+     else:
+          return None
+                
  ############################################################################
  #
  #  Funcion: EliminaBlancos
@@ -78,7 +94,8 @@ class Analex:
  #
  ############################################################################
  def EliminaBlancos(self,flujo):
-#Completar
+     pass
+     #Completar
 
  ############################################################################
  #
@@ -89,27 +106,21 @@ class Analex:
  #
  ############################################################################
  def Analiza(self):
-     def Analiza(self):
-         l = ""
-         ch = self.flujo.siguiente();
-         if ch == " ":
-         ##acciones si hemos encontrado un blancoi
-         elif ch == "\r":
-         # acciones si hemos encontrado un salto de linea
-         elif
-         # completar aqui para todas las categorias lexicasw
-         elif ch == "\n":
-             ## acciones al encontrar un salto de linea
-             self.nlinea = self.nlinea + 1
-             return self.Analiza()
-         elif ch:
-             # se ha encontrado un caracter no permitido
-             print ("ERROR LEXICO  Linea " + str(self.nlinea) + " ::  Caracter " + ch + " invalido ")
-             return self.Analiza()
-         else:
-             # el final de fichero
-             return componentes.EOF()
-
+  ch = self.flujo.siguiente()
+  print(ch)
+  if ch in numeros:
+      print('Tratando Numeros')
+      return self.TrataNum(self.flujo,ch)
+  elif ch in string.ascii_uppercase:
+      print('Tratando Identificación')
+      return self.TrataIdent(self.flujo,ch)
+  elif ch == '':
+      self.EliminaBlancos(self.flujo)
+  elif ch in CaracterEspeciales:
+      aux = CaracterEspecial(ch, self.nlinea)
+      return aux
+  elif ch == '.':
+      return None
 ############################################################################
 #
 #  Funcion: __main__
@@ -120,15 +131,15 @@ class Analex:
 ############################################################################
 
 if __name__=="__main__":
-    script, filename=argv
+    #script, filename=argv
     txt=open(filename)
     print ("PROGRAMA FUENTE %r"  % filename)
     i=0
     fl = flujo.Flujo(txt)
     analex=Analex(fl)
     c = analex.Analiza()
-    while c.cat != "EOF":
-        print (c)
-        c = analex.Analiza()
+    #while c.cat != "EOF":
+        #print (c)
+        #c = analex.Analiza()
     i = i + 1
 
